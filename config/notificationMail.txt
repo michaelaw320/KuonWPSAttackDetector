@@ -1,0 +1,4 @@
+== Kuon WPS Attack Detector ==
+An attack attempt to your Wi-Fi Access Point has been detected.
+It is advised to turn off WPS feature ASAP.
+If it's impossible then take down the AP for few moments.

@@ -1,0 +1,19 @@
+#!/bin/sh /etc/rc.common
+# Example script
+# Copyright (C) 2007 OpenWrt.org
+ 
+START=99
+
+boot() {
+	sleep 20
+	screen -dmS KuonDetectorMain /bin/KuonDetectorMain
+}
+
+start() {        
+        screen -dmS KuonDetectorMain /bin/KuonDetectorMain
+}                 
+ 
+stop() {          
+        killall KuonDetectorMain
+	killall KuonPacketCapture
+}

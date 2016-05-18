@@ -1,0 +1,5 @@
+#!/bin/sh
+. /root/KuonConfig
+
+mailsend -smtp $smtp_server -port $smtp_port -t $mail_destination -f $mail_from -sub $mail_subject -ssl -auth-login -user $smtp_user -pass $smtp_pass -cs "utf-8" -mime-type "text/plain" -msg-body $mail_body_filepath
+

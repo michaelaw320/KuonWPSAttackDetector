@@ -1,0 +1,70 @@
+#!/bin/sh
+
+. /root/KuonConfig
+
+mode=$1
+
+SwitchToClient () 
+{
+	wifi down
+	uci set wireless.@wifi-iface[0].ssid=$inet_ap_ssid
+	uci set wireless.@wifi-iface[0].encryption=$inet_ap_encryption
+	uci set wireless.@wifi-iface[0].key=$inet_ap_key
+	uci set wireless.@wifi-iface[0].network=$interface_name
+	uci set wireless.@wifi-iface[0].mode=sta
+	uci commit
+	wifi
+	sleep 5
+	ping -q -c 1 -w 1 8.8.8.8
+	while [ $? != 0 ]
+	do
+		sleep 1
+		ping -q -c 1 -w 1 8.8.8.8
+	done
+	return
+}
+
+SwitchToMonitor ()
+{
+	wifi down
+	uci set wireless.@wifi-iface[0].mode=monitor
+	uci set wireless.@wifi-iface[0].encryption=
+	uci set wireless.@wifi-iface[0].network=$interface_name
+	uci set wireless.radio0.channel=$monitor_ap_channel
+	uci commit
+	wifi
+	boolStop=0
+	while [ $boolStop != 1 ]
+	do
+		sleep 5
+		iw $interface_name set channel $monitor_ap_channel
+		if [ $? == 0 ]
+		then
+			boolStop=1
+		fi
+	done
+	
+	while [ $(expr "$(iw $interface_name info)" : '.*channel \([0-9]*\) .*') != "$monitor_ap_channel" ] 
+	do
+		if [ $monitor_ap_channel -le 6 ] 
+		then
+			tempchannel=$(expr $monitor_ap_channel + 1)
+		else
+			tempchannel=$(expr $monitor_ap_channel - 1)
+		fi
+		iw $interface_name set channel $tempchannel
+		iw $interface_name set channel $monitor_ap_channel
+	done
+	return
+}
+
+if [ $mode = "to_client" ]
+then
+	SwitchToClient
+elif [ $mode = "to_monitor" ]
+then
+	SwitchToMonitor
+else
+# Nothing
+	echo "No option"
+fi

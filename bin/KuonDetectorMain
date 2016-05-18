@@ -1,0 +1,24 @@
+#!/bin/sh
+
+. /root/KuonConfig
+
+KuonSwitcher to_client
+ntpd -nqN -p 0.openwrt.pool.ntp.org
+
+while [ 1 -eq 1 ]
+do
+	KuonSwitcher to_monitor
+	KuonPacketCapture $monitor_ap_mac_address $threshold $TTL wlan0
+	packet_capture_ret=$?
+	echo $packet_capture_ret
+	if [ $packet_capture_ret -eq 0 ]
+	then
+		# Sending notification
+		KuonSwitcher to_client
+		KuonMailer
+
+	else 
+		echo "Something went wrong"
+		break
+	fi
+done

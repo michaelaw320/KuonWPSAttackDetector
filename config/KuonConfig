@@ -1,0 +1,31 @@
+# Kuon Configuration File
+# This file must be placed on /root with name KuonConfig
+# leave no space between =
+# change parameters in <>
+
+# General config
+interface_name=wlan0
+
+# Kuon Packet Detector Configuration
+#Please fill MAC address without :
+monitor_ap_mac_address=112233445566
+monitor_ap_channel=6
+#Num of WSC_NACK for detection
+threshold=5
+#Remove WSC_NACK count older than TTL, in minutes
+TTL=60
+
+# Kuon Switcher Configuration
+inet_ap_ssid=<ssid with internet connection>
+inet_ap_key=<insert wifi password here>
+inet_ap_encryption=psk2
+
+# Kuon Mailer Configuration
+smtp_server=<smtp server>
+smtp_port=465
+smtp_user=<username>
+smtp_pass=<insert password>
+mail_from=<mail from, same with smtp_user>
+mail_destination=<notification_destination@something.com>
+mail_subject="NOTIFICATION"
+mail_body_filepath="/root/notificationMail.txt"
